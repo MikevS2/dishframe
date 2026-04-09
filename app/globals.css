@@ -237,7 +237,7 @@ button {
 .studio-grid {
   display: grid;
   gap: 24px;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .panel {
@@ -435,7 +435,7 @@ button {
   display: grid;
   gap: 10px;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .row-badge {
@@ -1001,7 +1001,7 @@ button {
   display: grid;
   grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
   gap: 22px;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .ingredients-table {
@@ -1167,7 +1167,7 @@ button {
 .signature-panel {
   display: grid;
   gap: 14px;
-  align-content: start;
+  align-content: flex-start;
   padding: 18px;
   border: 1px solid rgba(66, 47, 23, 0.08);
   border-radius: 16px;
@@ -1201,7 +1201,7 @@ button {
 .journal-column {
   display: grid;
   gap: 16px;
-  align-content: start;
+  align-content: flex-start;
 }
 
 .journal-column:first-child {
@@ -1254,7 +1254,7 @@ button {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 0.92fr);
   gap: 24px;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .terracotta-copy .recipe-section {
@@ -1546,7 +1546,7 @@ button {
 .library-heading {
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: flex-start;
   gap: 16px;
 }
 
@@ -1608,7 +1608,7 @@ button {
 .library-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, 280px);
-  justify-content: start;
+  justify-content: flex-start;
   gap: 18px;
 }
 
@@ -1652,7 +1652,7 @@ button {
 
 .detail-grid {
   grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-  align-items: start;
+  align-items: flex-start;
 }
 
 .contact-grid {
