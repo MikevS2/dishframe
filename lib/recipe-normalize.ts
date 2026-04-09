@@ -52,17 +52,17 @@ function rewriteInstructionsConsistently(instructions: string[]) {
 function parseIngredientLine(line: string): IngredientItem {
   const trimmed = cleanLine(line);
   const match = trimmed.match(
-    /^(?<amount>\d+(?:[.,]\d+)?(?:\/\d+)?)?\s*(?<unit>g|gr|kg|ml|l|el|eetlepel|eetlepels|tl|theelepel|theelepels|st|stuk|stuks|hand|handen|schep|scheppen|snuf|snufje|kop|kopje|teen|tenen)?\s*(?<name>.+)$/i
+    /^(\d+(?:[.,]\d+)?(?:\/\d+)?)?\s*(g|gr|kg|ml|l|el|eetlepel|eetlepels|tl|theelepel|theelepels|st|stuk|stuks|hand|handen|schep|scheppen|snuf|snufje|kop|kopje|teen|tenen)?\s*(.+)$/i
   );
 
-  if (!match?.groups) {
+  if (!match) {
     return normalizeIngredient({ name: trimmed });
   }
 
   return normalizeIngredient({
-    amount: match.groups.amount ?? "",
-    unit: match.groups.unit ?? "",
-    name: match.groups.name ?? trimmed
+    amount: match[1] ?? "",
+    unit: match[2] ?? "",
+    name: match[3] ?? trimmed
   });
 }
 
