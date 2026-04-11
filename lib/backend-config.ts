@@ -8,14 +8,25 @@ export interface BackendConfig {
 }
 
 export function getBackendConfig(): BackendConfig {
-  const provider = (process.env.NEXT_PUBLIC_BACKEND_PROVIDER as BackendProvider | undefined) ?? "local";
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+  const requestedProvider = process.env.NEXT_PUBLIC_BACKEND_PROVIDER?.toLowerCase();
+  const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+  let provider: BackendProvider;
+
+  if (requestedProvider === "supabase") {
+    provider = "supabase";
+  } else if (requestedProvider === "local") {
+    provider = isSupabaseConfigured ? "supabase" : "local";
+  } else {
+    provider = isSupabaseConfigured ? "supabase" : "local";
+  }
 
   return {
     provider,
     supabaseUrl,
     supabaseAnonKey,
-    isSupabaseConfigured: Boolean(supabaseUrl && supabaseAnonKey)
+    isSupabaseConfigured
   };
 }
