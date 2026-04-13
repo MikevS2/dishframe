@@ -8,12 +8,29 @@ export interface BackendConfig {
   isSupabaseConfigured: boolean;
 }
 
+function normalizeValue(value: string | undefined) {
+  return value?.trim() ?? "";
+}
+
+function isValidHttpUrl(value: string) {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function getBackendConfig(): BackendConfig {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
-  const requestedProvider = process.env.NEXT_PUBLIC_BACKEND_PROVIDER?.toLowerCase();
-  const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+  const supabaseUrl = normalizeValue(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const supabaseAnonKey = normalizeValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const appUrl = normalizeValue(process.env.NEXT_PUBLIC_APP_URL);
+  const requestedProvider = normalizeValue(process.env.NEXT_PUBLIC_BACKEND_PROVIDER).toLowerCase();
+  const isSupabaseConfigured = isValidHttpUrl(supabaseUrl) && Boolean(supabaseAnonKey);
 
   let provider: BackendProvider;
 

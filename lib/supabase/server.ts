@@ -11,16 +11,20 @@ export async function createSupabaseServerClient() {
     return null;
   }
 
-  return createServerClient(config.supabaseUrl, config.supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          cookieStore.set(name, value, options);
-        });
+  try {
+    return createServerClient(config.supabaseUrl, config.supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        }
       }
-    }
-  });
+    });
+  } catch {
+    return null;
+  }
 }
