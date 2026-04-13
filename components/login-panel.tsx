@@ -175,13 +175,30 @@ export function LoginPanel() {
             {mode === "signup" ? (
               <div className="field">
                 <label htmlFor="login-name">Naam</label>
-                <input id="login-name" value={name} onChange={(event) => setName(event.target.value)} />
+                <input
+                  id="login-name"
+                  name="name"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
               </div>
             ) : null}
 
             <div className="field">
               <label htmlFor="login-email">E-mailadres</label>
-              <input id="login-email" value={email} onChange={(event) => setEmail(event.target.value)} />
+              <input
+                id="login-email"
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete={mode === "login" ? "email" : "username"}
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
             </div>
 
             {mode === "signup" || loginMethod === "password" ? (
@@ -189,7 +206,9 @@ export function LoginPanel() {
                 <label htmlFor="login-password">Wachtwoord</label>
                 <input
                   id="login-password"
+                  name="password"
                   type="password"
+                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   minLength={8}
