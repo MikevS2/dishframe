@@ -353,6 +353,20 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
       ? null
       : Math.max(activePlan.generationLimit - (state.user?.generationsUsed ?? 0), 0);
 
+  function getAuthRedirectUrl() {
+    const configuredUrl = backendConfig.appUrl.trim();
+
+    if (configuredUrl) {
+      return configuredUrl.endsWith("/") ? configuredUrl : `${configuredUrl}/`;
+    }
+
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}/`;
+    }
+
+    return undefined;
+  }
+
   const value = useMemo<AccountContextValue>(
     () => ({
       user: state.user,
@@ -393,8 +407,7 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
         }
 
         if (supabase) {
-          const redirectTo =
-            typeof window !== "undefined" ? `${window.location.origin}/` : undefined;
+          const redirectTo = getAuthRedirectUrl();
 
           const { error } = await supabase.auth.signUp({
             email: email.trim(),
@@ -421,8 +434,7 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
           return "E-mail login is pas beschikbaar zodra Supabase actief is.";
         }
 
-        const redirectTo =
-          typeof window !== "undefined" ? `${window.location.origin}/` : undefined;
+        const redirectTo = getAuthRedirectUrl();
 
         const { error } = await supabase.auth.signInWithOtp({
           email: email.trim(),
@@ -585,7 +597,7 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
       },
       getRecipeById: (id) => state.recipes.find((recipe) => recipe.id === id)
     }),
-    [activePlan, isAuthLoading, remainingGenerations, state.recipes, state.user, supabase]
+    [activePlan, backendConfig.appUrl, isAuthLoading, remainingGenerations, state.recipes, state.user, supabase]
   );
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>;
