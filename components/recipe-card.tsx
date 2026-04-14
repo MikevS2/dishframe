@@ -29,6 +29,33 @@ function RecipeMeta({ recipe }: { recipe: RecipeDocument }) {
   );
 }
 
+function RecipeMacros({ recipe }: { recipe: RecipeDocument }) {
+  const macroItems = [
+    recipe.macros?.calories ? { label: "Kcal", value: recipe.macros.calories } : null,
+    recipe.macros?.protein ? { label: "Eiwit", value: recipe.macros.protein } : null,
+    recipe.macros?.carbs ? { label: "Koolhydraten", value: recipe.macros.carbs } : null,
+    recipe.macros?.fat ? { label: "Vet", value: recipe.macros.fat } : null
+  ].filter(Boolean) as Array<{ label: string; value: string }>;
+
+  if (!macroItems.length) {
+    return null;
+  }
+
+  return (
+    <section className="recipe-macros">
+      <span className="recipe-macros-label">Macro&apos;s per portie</span>
+      <div className="recipe-macros-grid">
+        {macroItems.map((item) => (
+          <div key={item.label} className="recipe-macro-card">
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function IngredientsTable({ recipe }: { recipe: RecipeDocument }) {
   return (
     <table className="ingredients-table" aria-label="Ingredienten">
@@ -64,11 +91,35 @@ function RecipeImage({ recipe }: { recipe: RecipeDocument }) {
   );
 }
 
-function InstructionsBlock({ recipe }: { recipe: RecipeDocument }) {
+function InstructionList({
+  recipe,
+  twoColumns = false,
+  className = ""
+}: {
+  recipe: RecipeDocument;
+  twoColumns?: boolean;
+  className?: string;
+}) {
+  return (
+    <ol className={["recipe-steps", twoColumns ? "is-two-column" : "", className].filter(Boolean).join(" ")}>
+      {recipe.instructions.map((instruction, index) => (
+        <li key={`${recipe.title}-${index}`}>{instruction}</li>
+      ))}
+    </ol>
+  );
+}
+
+function InstructionsBlock({
+  recipe,
+  twoColumns = false
+}: {
+  recipe: RecipeDocument;
+  twoColumns?: boolean;
+}) {
   return (
     <section className="recipe-section">
       <h2>Bereiding {recipe.title.toLowerCase()}</h2>
-      <p>{recipe.instructions.join("\n\n")}</p>
+      <InstructionList recipe={recipe} twoColumns={twoColumns} />
     </section>
   );
 }
@@ -99,7 +150,7 @@ function IngredientChips({ recipe }: { recipe: RecipeDocument }) {
   );
 }
 
-function renderLayoutBody(recipe: RecipeDocument) {
+function renderLayoutBody(recipe: RecipeDocument, twoColumnInstructions: boolean) {
   switch (recipe.layoutId) {
     case "linnen":
       return (
@@ -112,7 +163,11 @@ function renderLayoutBody(recipe: RecipeDocument) {
             </div>
             <div className="recipe-note-block">
               <span className="recipe-note-label">Bereiding</span>
-              <p className="recipe-note-copy">{recipe.instructions.join("\n\n")}</p>
+              <InstructionList
+                recipe={recipe}
+                twoColumns={twoColumnInstructions}
+                className="recipe-note-steps"
+              />
             </div>
           </div>
         </section>
@@ -126,7 +181,7 @@ function renderLayoutBody(recipe: RecipeDocument) {
           </div>
           <div className="maison-content">
             <IngredientChips recipe={recipe} />
-            <InstructionsBlock recipe={recipe} />
+            <InstructionsBlock recipe={recipe} twoColumns={twoColumnInstructions} />
           </div>
         </section>
       );
@@ -140,7 +195,7 @@ function renderLayoutBody(recipe: RecipeDocument) {
           </div>
           <div className="signature-panel">
             <RecipeImage recipe={recipe} />
-            <InstructionsBlock recipe={recipe} />
+            <InstructionsBlock recipe={recipe} twoColumns={twoColumnInstructions} />
           </div>
         </section>
       );
@@ -149,7 +204,7 @@ function renderLayoutBody(recipe: RecipeDocument) {
       return (
         <section className="recipe-body recipe-body-journal">
           <div className="journal-column">
-            <InstructionsBlock recipe={recipe} />
+            <InstructionsBlock recipe={recipe} twoColumns={twoColumnInstructions} />
           </div>
           <div className="journal-column">
             <RecipeImage recipe={recipe} />
@@ -172,7 +227,11 @@ function renderLayoutBody(recipe: RecipeDocument) {
             </div>
             <div className="salon-card">
               <span className="recipe-note-label">Bereiding</span>
-              <p className="recipe-note-copy">{recipe.instructions.join("\n\n")}</p>
+              <InstructionList
+                recipe={recipe}
+                twoColumns={twoColumnInstructions}
+                className="recipe-note-steps"
+              />
             </div>
           </div>
         </section>
@@ -183,7 +242,7 @@ function renderLayoutBody(recipe: RecipeDocument) {
         <section className="recipe-body recipe-body-terracotta">
           <div className="terracotta-top">
             <div className="terracotta-copy">
-              <InstructionsBlock recipe={recipe} />
+              <InstructionsBlock recipe={recipe} twoColumns={twoColumnInstructions} />
             </div>
             <RecipeImage recipe={recipe} />
           </div>
@@ -201,7 +260,7 @@ function renderLayoutBody(recipe: RecipeDocument) {
             <IngredientsTable recipe={recipe} />
             <RecipeImage recipe={recipe} />
           </section>
-          <InstructionsBlock recipe={recipe} />
+          <InstructionsBlock recipe={recipe} twoColumns={twoColumnInstructions} />
         </>
       );
   }
@@ -215,6 +274,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
     recipe.instructions.length * 3 +
     recipe.instructions.join(" ").length / 180;
   const densityClass = contentScore > 24 ? "is-dense" : contentScore > 16 ? "is-compact" : "";
+  const twoColumnInstructions = contentScore > 18 || recipe.instructions.join(" ").length > 460;
   const cardClassName = ["recipe-card", `layout-${layout.id}`, densityClass].filter(Boolean).join(" ");
 
   return (
@@ -232,9 +292,10 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
     >
       <h1 className="recipe-title">{recipe.title}</h1>
       <RecipeMeta recipe={recipe} />
+      <RecipeMacros recipe={recipe} />
       <div className="recipe-rule" />
 
-      {renderLayoutBody(recipe)}
+      {renderLayoutBody(recipe, twoColumnInstructions)}
     </article>
   );
 }

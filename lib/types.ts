@@ -17,6 +17,13 @@ export interface IngredientItem {
   unit: string;
 }
 
+export interface RecipeMacros {
+  calories?: string;
+  protein?: string;
+  carbs?: string;
+  fat?: string;
+}
+
 export interface RecipeDocument {
   title: string;
   ingredients: IngredientItem[];
@@ -25,6 +32,7 @@ export interface RecipeDocument {
   mealType?: string;
   prepTime?: string;
   cookTime?: string;
+  macros?: RecipeMacros;
   imageMode: RecipeImageMode;
   layoutId: RecipeLayoutId;
   colorThemeId?: RecipeColorThemeId;

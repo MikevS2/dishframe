@@ -6,6 +6,7 @@ import { toPng } from "html-to-image";
 import { RecipeCard } from "@/components/recipe-card";
 import { useAccount } from "@/components/account-provider";
 import { LAYOUT_OPTIONS, getLayoutById } from "@/lib/layouts";
+import { RECIPE_EXPORT_HEIGHT, RECIPE_EXPORT_WIDTH } from "@/lib/recipe-render";
 
 const CATEGORIES = ["ontbijt", "lunch", "diner", "snack"];
 
@@ -49,7 +50,12 @@ export function RecipeDetailView({ recipeId }: { recipeId: string }) {
 
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(previewRef.current, { cacheBust: true, pixelRatio: 2 });
+      const dataUrl = await toPng(previewRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        canvasWidth: RECIPE_EXPORT_WIDTH,
+        canvasHeight: RECIPE_EXPORT_HEIGHT
+      });
       const link = document.createElement("a");
       link.href = dataUrl;
       link.download = `${recipe.title.toLowerCase().replace(/\s+/g, "-") || "recept"}.png`;
@@ -219,8 +225,10 @@ export function RecipeDetailView({ recipeId }: { recipeId: string }) {
           </div>
 
           <div className="panel preview-panel">
-            <div ref={previewRef}>
-              <RecipeCard recipe={recipe} />
+            <div ref={previewRef} className="recipe-preview-shell">
+              <div className="recipe-preview-frame">
+                <RecipeCard recipe={recipe} />
+              </div>
             </div>
           </div>
         </section>

@@ -7,6 +7,7 @@ import { useAccount } from "@/components/account-provider";
 import { useNavigationGuard } from "@/components/navigation-guard-provider";
 import { RecipeCard } from "@/components/recipe-card";
 import { LAYOUT_OPTIONS, getLayoutById, getLayoutTheme } from "@/lib/layouts";
+import { RECIPE_EXPORT_HEIGHT, RECIPE_EXPORT_WIDTH } from "@/lib/recipe-render";
 import { FORM_UNIT_OPTIONS } from "@/lib/recipe-units";
 import type {
   IngredientItem,
@@ -386,7 +387,9 @@ export function RecipeStudio() {
     try {
       const dataUrl = await toPng(previewRef.current, {
         cacheBust: true,
-        pixelRatio: 2
+        pixelRatio: 2,
+        canvasWidth: RECIPE_EXPORT_WIDTH,
+        canvasHeight: RECIPE_EXPORT_HEIGHT
       });
 
       const link = document.createElement("a");
@@ -838,8 +841,10 @@ export function RecipeStudio() {
 
             <div className="preview-stage">
               {deferredRecipe ? (
-                <div ref={previewRef}>
-                  <RecipeCard recipe={activeRecipe ?? deferredRecipe} />
+                <div ref={previewRef} className="recipe-preview-shell">
+                  <div className="recipe-preview-frame">
+                    <RecipeCard recipe={activeRecipe ?? deferredRecipe} />
+                  </div>
                 </div>
               ) : (
                 <div className={`layout-hero-preview layout-${selectedLayout.id}`}>

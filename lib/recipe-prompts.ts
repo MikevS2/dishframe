@@ -23,6 +23,8 @@ Schrijfregels:
 - schat ook het eetmoment in als dat logisch af te leiden is, zoals ontbijt, lunch, diner of snack
 - schat ook een logische voorbereidingstijd en kooktijd in als die niet expliciet is gegeven
 - geef tijden kort weer, bijvoorbeeld "10 min" of "25 min"
+- reken ook globale macro's per portie uit
+- maak vage hoeveelheden netjes en bruikbaar, bijvoorbeeld "een beetje olijfolie" wordt een logische kookmaat zoals "1 theelepel"
 - laat onzekere details leeg in plaats van ze te verzinnen
 - antwoord uitsluitend als JSON`;
 
@@ -36,6 +38,12 @@ Lever JSON met exact deze structuur:
   "mealType": "ontbijt, lunch, diner, snack of leeg",
   "prepTime": "string of leeg",
   "cookTime": "string of leeg",
+  "macros": {
+    "calories": "bijvoorbeeld 520 kcal of leeg",
+    "protein": "bijvoorbeeld 34 g of leeg",
+    "carbs": "bijvoorbeeld 46 g of leeg",
+    "fat": "bijvoorbeeld 18 g of leeg"
+  },
   "ingredients": [
     { "name": "string", "amount": "string", "unit": "string" }
   ],

@@ -1,0 +1,2 @@
+export const RECIPE_EXPORT_WIDTH = 1080;
+export const RECIPE_EXPORT_HEIGHT = 1528;

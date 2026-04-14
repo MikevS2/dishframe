@@ -115,7 +115,21 @@ export async function ensureRemoteProfile(
 ): Promise<AccountUser | null> {
   const fallbackUser = mapAuthUser(user);
 
-  const upsertPayload = {
+  const { data, error } = await client
+    .from("profiles")
+    .select("id, email, full_name, active_plan, generations_used")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    return null;
+  }
+
+  if (data) {
+    return mapProfileRow(data as ProfileRow, user);
+  }
+
+  const insertPayload = {
     id: user.id,
     email: user.email ?? fallbackUser.email,
     full_name: fallbackUser.name,
@@ -123,22 +137,17 @@ export async function ensureRemoteProfile(
     generations_used: 0
   };
 
-  const upsertResult = await client.from("profiles").upsert(upsertPayload, { onConflict: "id" });
-  if (upsertResult.error) {
-    return null;
-  }
-
-  const { data, error } = await client
+  const insertResult = await client
     .from("profiles")
+    .insert(insertPayload)
     .select("id, email, full_name, active_plan, generations_used")
-    .eq("id", user.id)
     .single();
 
-  if (error) {
+  if (insertResult.error) {
     return null;
   }
 
-  return mapProfileRow(data as ProfileRow, user);
+  return mapProfileRow(insertResult.data as ProfileRow, user);
 }
 
 export async function loadRemoteRecipes(
